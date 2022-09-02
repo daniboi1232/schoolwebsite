@@ -83,7 +83,22 @@ def library():
     conn.close()
     return render_template('library.html', info = title)
 
-
+@app.route('/addbook',methods=['GET','POST'])
+def addbook():
+    if request.method == 'POST':
+        author = request.form['author1']
+        title = request.form['title1']
+        
+        if not author:
+            flash('Author is REQUIRED')
+        elif not title:
+            flash('Title is REQUIRED')
+        else:
+            conn = get_db_connection()
+            conn.execute('INSERT INTO books (title, author) VALUES (?, ?)',(title, author))
+            conn.commit()
+            conn.close()
+    return render_template('library.html')
     
 @app.route('/borrowbook', methods=['GET','POST'])
 def borrowbook():

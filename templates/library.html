@@ -41,6 +41,24 @@
             </tr>
         {% endfor %}
         </table>
+        <form action="addbook" method="post">
+            <label for="title">Author</label>
+            <br>
+            <input type="text" name="author1"
+                   placeholder="Insert Author"
+                   value="{{ request.form['author1'] }}"></input>
+            <br>
+    
+            <label for="content">Title</Title></label>
+            <br>
+            <input type="text" name="title1"
+                      placeholder="Insert Title"
+                      value="{{ request.form['title1'] }}"></input>
+            <br>
+            <button type="submit">Submit</button>
+            <br>
+            <br>
+          </form>
     </div>
    </div>
    <br>
