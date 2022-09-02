@@ -1,0 +1,150 @@
+.check{
+  font-size: 10px;
+}
+
+
+h1{
+  color: rgb(255, 255, 255);
+  font-size: 50px;
+}
+body{
+  text-align: center;
+  background-color: rgb(55, 55, 55);
+}
+.banner{
+  background-color: black;
+  background-image: url('/static/css/images/books.jpg');
+  background-size: inherit;
+  width:auto;
+  height: auto;
+  background-repeat: no-repeat;
+  object-fit: scale up;
+}
+*{
+  margin: 0;
+  padding: 0;
+}
+.wrapper{
+  width: 90%;
+  margin: 0 auto;
+}
+header{
+  width: 100%;
+  height: 100px;
+  background-color: rgb(55, 55, 55);
+  position: fixed;
+  z-index: 1100;
+}
+.logo{
+  width: 30%;
+  float:left;
+  text-align: left;
+  line-height: 100px;
+
+}
+.logo a{
+  text-decoration: none;
+  font-size: 30px;
+  font-family: 'pacifico';
+  color: #fff;
+  letter-spacing: 4px;
+}
+nav{
+  float:right;
+  line-height: 100px;
+  text-decoration: none;
+}
+nav a{
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+  font-family:Georgia, 'Times New Roman', Times, serif;
+  letter-spacing: 2px;
+  padding: 36px 10px;
+  font-size: 20px;
+  margin: 0 1px;
+  font-weight: 500;
+}
+nav a:hover{
+  background-color: white;
+  color: black;
+}
+.banner-area{
+  background-image: url('/static/css/images/bookss.jpeg');
+  background-size: cover;
+  background-position: center center;
+  top: 100px;
+  height: 100vh;
+  width: 100%;
+  position: fixed;
+}
+.banner-area h1{
+  margin-top: 10%;
+}
+.banner-area::after{
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #424242;
+  opacity: .7;
+  z-index: -1;
+}
+.banner-area h2{
+  padding-top: 8%;
+  font-size: 80px;
+  color: #fff;
+}
+.content-area{
+  width: 100%;
+  height: 800px;
+  position: relative;
+  background: white;
+  top: 550px;
+}
+.content-area h2{
+  font-size: 30px;
+  margin: 0;
+  padding-top: 30px;
+  letter-spacing: 3px;
+}
+.content-area h1{
+  font-size: 30px;
+  margin: 0;
+  padding-top: 30px;
+  letter-spacing: 3px;
+}
+.context-area p{
+  padding: 2% 0;
+  line-height: 35px;
+  text-align: justify ;
+}
+.form{
+  position: relative;
+}
+.form label{
+  font-size: 20px;
+
+}
+.form2 label{
+  font-size: 30px;
+}
+h3{
+  padding-top: 10px;
+  text-decoration: none;
+}
+.cancelbutton{
+  margin: 10px;
+}
+input{
+  margin: 10px;
+}
+.borrowbook{
+  margin: 50px;
+}
+.librarycontents{
+  text-align: center;
+  text-decoration: bold;
+}

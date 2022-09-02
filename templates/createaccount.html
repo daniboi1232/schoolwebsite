@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/css/styles.css" />
+    <title>The Library</title>
+    <style>
+      .content-area{
+        top: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="'box-area">
+      <header>
+        <div class="wrapper">
+          <div class="logo">
+            <a href={{url_for('aboutme')}}>Yo Mama</a>
+          </div>
+          
+          <nav>
+            <a href={{url_for('weirdo')}}>These</a>
+            <a href={{url_for('weirdo')}}>Links</a>
+            <a href={{url_for('weirdo')}}>Dont</a>
+            <a href={{url_for('weirdo')}}>Work</a>
+            <a href={{url_for('weirdo')}}>:)</a>
+          </nav>
+        </div>
+      </header>
+    </div>
+   <div class="content-area">
+    <div class="wrapper">
+
+      <div class="form"> 
+        <div class="form2">
+            <form action="create" method="POST">
+            <div class="container">
+                <br>
+                <br>
+                <label for="username"><b>Username</b></label>
+                <input type="text" placeholder="Enter Username" name="uname" required>
+                <br>
+                <br>
+
+                <label for="password"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="psw" required>
+                <br><br>
+                <label for="email"><b>Email</b></label>
+                <input type="email" placeholder="Enter Email" name="email" required>
+                <br>
+                <br>
+                <button type="submit">Create Account</button>
+            </div>
+            </form>
+            <button class='cancelbutton'type="submit" href="/templates/index.html">Cancel</button>
+        </div>
+      </div>
+  </body>
+</html>

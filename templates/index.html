@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/css/styles.css" />
+    <title>The Library</title>
+    <style>
+      .content-area{
+        top: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="'box-area">
+      <header>
+        <div class="wrapper">
+          <div class="logo">
+            <a href={{url_for('aboutme')}}>Yo Mama</a>
+          </div>
+          
+          <nav>
+            <a href={{url_for('weirdo')}}>These</a>
+            <a href={{url_for('weirdo')}}>Links</a>
+            <a href={{url_for('weirdo')}}>Dont</a>
+            <a href={{url_for('weirdo')}}>Work</a>
+            <a href={{url_for('weirdo')}}>:)</a>
+          </nav>
+        </div>
+      </header>
+    </div>
+    <div class="content-area">
+      <div class="wrapper">
+
+        <div class="form"> 
+          
+
+
+          <div class="login">
+            <h1>Login</h1>
+            <form action="{{ url_for('login') }}" method="post">
+              <label for="username">
+                <i class="fas fa-user">Username</i>
+              </label>
+              <input type="text" name="username" placeholder="Username" id="username" required>
+              <br>
+              <br>
+              <label for="password">
+                <i class="fas fa-lock">Password</i>
+              </label>
+              <input type="password" name="password" placeholder="Password" id="password" required>
+              <div class="msg">{{ msg }}</div>
+              <br>
+              <input type="submit" value="Login">
+            </form>
+          </div>
+          <br>
+
+          <form action="createaccount" method="POST">
+            <button type="submit">Create Account</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
