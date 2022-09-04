@@ -148,3 +148,7 @@ input{
   text-align: center;
   text-decoration: bold;
 }
+table{
+  margin-left: auto;
+  margin-right: auto;
+}
