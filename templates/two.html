@@ -34,10 +34,11 @@
         <h2>Your searched Book:</h2>
         <div>
             {% for book in info %}
-            <h2>Title:</h2>
+            <h3>You Searched for {{ book[1] }}, Written By {{ book[2]}}</h3>
+           
+           
             <h3>{{ book[1] }}</h3>
             <br>
-            <h2>Author:</h2>
             <h3>{{ book[2] }}</h3>
             {% endfor %}
             
