@@ -152,3 +152,6 @@ table{
   margin-left: auto;
   margin-right: auto;
 }
+button{
+  margin-left: 5px;
+}

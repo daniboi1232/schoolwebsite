@@ -33,16 +33,23 @@
     <div class="wrapper">
         <table class="librarycontents" style="text-align: center;">
             <tr>
-                <th>Title</th><th>Author</th>
+                <th>--Title--</th><th>--Author--</th><th>--Lend--</th>
             </tr>
         {% for title in info %}
             <tr>
                 <td>{{ title['title']}}</td>
                 <td>{{ title['author']}}</td>
+                <td>
+                <a href="/borrowbook">
+                    <img src="/static/css/images/thumb.png" style="width: 20px; height: 20px;">
+                </a>
+                </td>
             </tr>
         {% endfor %}
         </table>
-        <br><br><br><br>
+        <br><br><br>
+        <h3>INSERT NEW BOOK</h3>
+        <br>
         <form action="addbook" method="post">
             <label for="title">Author</label>
             <br>

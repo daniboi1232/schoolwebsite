@@ -19,7 +19,7 @@ def get_db_connection():
 
 @app.route('/')
 def direct():
-    return render_template('index.html')
+    return redirect(url_for('login'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -48,7 +48,10 @@ def login():
             session['username'] = account['username']
             session['password'] = account['password']
             # Redirect to home page
-            return render_template('main.html')
+            conn = get_db_connection()
+            title = conn.execute('SELECT * FROM books ORDER BY title').fetchall()
+            conn.close()
+            return redirect(url_for('library', info = title))
         else:
             # Account doesnt exist or username/password incorrect
             msg = 'Incorrect username/password!'
@@ -109,16 +112,16 @@ def aboutme():
     return render_template('aboutme.html')
 
 
-@app.route('/createaccount', methods=['GET','POST'])
-def createaccount():
+#@app.route('/createaccount', methods=['GET','POST'])
+#def createaccount():
     return render_template('createaccount.html')
 
 @app.route('/weirdo', methods=['GET','POST'])
 def weirdo():
     return render_template('spare.html')
 
-@app.route('/create', methods=['GET','POST'])
-def create():
+#@app.route('/create', methods=['GET','POST'])
+#def create():
     if request.method == 'POST':
         username = request.form['uname']
         password = request.form['psw']
@@ -201,7 +204,9 @@ def borrowers():
     return render_template('spare.html')
 
 
-
+@app.route('/loan', methods=['GET','POST'])
+def loan():
+    return render_template('spare.html')
 
         #if lname in search or fname in search:
             #return render_template('spare.html', info = search)
@@ -209,10 +214,9 @@ def borrowers():
             #return render_template('main.html')
 
 
-
 #@app.route('/search/<term>')
 #def search(term):
-    conn = get_db_connection()
+    #conn = get_db_connection()
 
 #getting rid of port 5000 in the url           
 if __name__ == "__main__":
