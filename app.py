@@ -6,6 +6,7 @@ import sqlite3
 #from flask_mysqldb import MySQL
 #import MySQLdb.cursors
 
+logged = "false"
 
 app = Flask(__name__)
 
@@ -51,6 +52,7 @@ def login():
             conn = get_db_connection()
             title = conn.execute('SELECT * FROM books ORDER BY title').fetchall()
             conn.close()
+            logged = "true"
             return redirect(url_for('library', info = title))
         else:
             # Account doesnt exist or username/password incorrect
@@ -81,11 +83,16 @@ def main():
 
 @app.route('/library', methods=['GET','POST'])
 def library():
-    conn = get_db_connection()
-    title = conn.execute('SELECT * FROM books ORDER BY title').fetchall()
-    conn.close()
-    return render_template('library.html', info = title)
-
+    if request.method == 'POST':
+        conn = get_db_connection()
+        title = conn.execute('SELECT * FROM books ORDER BY title').fetchall()
+        conn.close()
+        return render_template('library.html', info = title)
+    elif request.method == 'GET':
+        conn = get_db_connection()
+        title = conn.execute('SELECT * FROM books ORDER BY title').fetchall()
+        conn.close()
+        return render_template('library.html', info = title)
 @app.route('/addbook',methods=['GET','POST'])
 def addbook():
     if request.method == 'POST':
@@ -103,9 +110,14 @@ def addbook():
             conn.close()
     return render_template('library.html')
     
-@app.route('/borrowbook', methods=['GET','POST'])
-def borrowbook():
-    return render_template('borrower.html')
+@app.route('/borrowbook/<idbooks>', methods=['GET','POST'])
+def borrowbook(idbooks):
+    if request.method == 'GET':
+        conn = get_db_connection()
+        title = conn.execute('SELECT * FROM books WHERE idbooks=?',(idbooks,)).fetchall()
+        print(len(title))
+        conn.close()
+        return render_template('borrower.html', title=title)
 
 @app.route('/aboutme', methods=['GET','POST'])
 def aboutme():
@@ -118,7 +130,10 @@ def aboutme():
 
 @app.route('/weirdo', methods=['GET','POST'])
 def weirdo():
-    return render_template('spare.html')
+    if logged == "True":
+        return render_template('spare.html')
+    else:
+        return render_template('borrower.html')
 
 #@app.route('/create', methods=['GET','POST'])
 #def create():

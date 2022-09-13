@@ -33,15 +33,16 @@
     <div class="wrapper">
         <table class="librarycontents" style="text-align: center;">
             <tr>
-                <th>--Title--</th><th>--Author--</th><th>--Lend--</th>
+                <th>--Title--</th><th>--Author--</th><th>--id--</th><th>--Lend--</th>
             </tr>
         {% for title in info %}
             <tr>
                 <td>{{ title['title']}}</td>
                 <td>{{ title['author']}}</td>
+                <td>{{ title['idbooks']}}</td>
                 <td>
-                <a href="/borrowbook">
-                    <img src="/static/css/images/thumb.png" style="width: 20px; height: 20px;">
+                <a href="/borrowbook/{{ title['idbooks']}}">
+                    <img src="/static/css/images/thumb.png" style="width: 20px; height: 20px;" >
                 </a>
                 </td>
             </tr>
