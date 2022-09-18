@@ -58,7 +58,7 @@ def login():
             # Account doesnt exist or username/password incorrect
             msg = 'Incorrect username/password!'
     # Show the login form with message (if any)
-    return render_template('index.html', msg=msg)
+    return render_template('index.html')
 
 
 
@@ -113,11 +113,22 @@ def addbook():
 @app.route('/borrowbook/<idbooks>', methods=['GET','POST'])
 def borrowbook(idbooks):
     if request.method == 'GET':
+        #connecting to the db
         conn = get_db_connection()
+        
+        borrowers = conn.execute('SELECT * FROM borrowers').fetchall()
+        
         title = conn.execute('SELECT * FROM books WHERE idbooks=?',(idbooks,)).fetchall()
         print(len(title))
+
+
         conn.close()
-        return render_template('borrower.html', title=title)
+        return render_template('borrower.html', title=title, borrowers=borrowers)
+
+@app.route('/borrowbook/borrowers', methods=['GET','POST'])
+def borrowers2():
+    return render_template('successful.html')
+
 
 @app.route('/aboutme', methods=['GET','POST'])
 def aboutme():
@@ -130,14 +141,11 @@ def aboutme():
 
 @app.route('/weirdo', methods=['GET','POST'])
 def weirdo():
-    if logged == "True":
-        return render_template('spare.html')
-    else:
-        return render_template('borrower.html')
+        return render_template('error.html')
 
 #@app.route('/create', methods=['GET','POST'])
 #def create():
-    if request.method == 'POST':
+    #if request.method == 'POST':
         username = request.form['uname']
         password = request.form['psw']
         email = request.form['email']
@@ -154,7 +162,7 @@ def weirdo():
             conn.commit()
             conn.close()
         return redirect(url_for('main'))
-    return render_template('spare.html')
+    #return render_template('spare.html')
 
 
 @app.route('/borrowers', methods=['GET','POST'])
@@ -222,6 +230,19 @@ def borrowers():
 @app.route('/loan', methods=['GET','POST'])
 def loan():
     return render_template('spare.html')
+
+@app.route('/insertbook',methods=['GET','POST'])
+def insertbook():
+    return render_template('insertbook.html')
+
+@app.route('/borrowerspage',methods=['GET','POST'])
+def borrowerspage():
+    return render_template('borrowerspage.html')
+
+@app.route('/lendedbooks',methods=['GET','POST'])
+def lendedbooks():
+    return render_template('lendedbooks.html')
+
 
         #if lname in search or fname in search:
             #return render_template('spare.html', info = search)
