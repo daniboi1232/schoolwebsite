@@ -15,10 +15,10 @@
           </div>
           
           <nav>
-            <a href={{url_for('weirdo')}}>Library</a>
-            <a href={{url_for('weirdo')}}>Insert Book</a>
-            <a href={{url_for('weirdo')}}>Dont</a>
-            <a href={{url_for('weirdo')}}>Work</a>
+            <a href={{url_for('library')}}>Library</a>
+            <a href={{url_for('insertbook')}}>Insert Book</a>
+            <a href={{url_for('borrowerspage')}}>Borrowers</a>
+            <a href={{url_for('lendedbooks')}}>Lent Books</a>
             <a href={{url_for('weirdo')}}>:)</a>
           </nav>
         </div>
@@ -48,27 +48,8 @@
             </tr>
         {% endfor %}
         </table>
-        <br><br><br>
-        <h3>INSERT NEW BOOK</h3>
-        <br>
-        <form action="addbook" method="post">
-            <label for="title">Author</label>
-            <br>
-            <input type="text" name="author1"
-                   placeholder="Insert Author"
-                   value="{{ request.form['author1'] }}"></input>
-            <br>
-    
-            <label for="content">Title</Title></label>
-            <br>
-            <input type="text" name="title1"
-                      placeholder="Insert Title"
-                      value="{{ request.form['title1'] }}"></input>
-            <br>
-            <button type="submit">Submit</button>
-            <br>
-            <br>
-          </form>
+        
+        
     </div>
    </div>
    <br>
