@@ -31,7 +31,19 @@
    
    <div class="content-area">
     <div class="wrapper">
-        <h1>this is the uncomplete page for lended books</h1>
+        <label style="font-size: 30px;">Books currently being borrowed</label>
+            <table> 
+              <tr>
+                <th>----Title----</th><th>----Author----</th><th>----Borrower----</th>
+              </tr>
+              {% for lended in lended %}
+              <tr>
+                <td>{{ lended['title']}}</td>
+                <td>{{ lended['author']}}</td>
+                <td>{{ lended['borrower']}}</td>
+              </tr> 
+              {% endfor %}
+            </table>
     </div>
    </div>
   </body>

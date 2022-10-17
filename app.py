@@ -1,5 +1,6 @@
 from crypt import methods
 import email
+import time
 from re import search, template
 from flask import Flask, render_template, redirect, url_for, request, flash, session
 import sqlite3
@@ -126,7 +127,10 @@ def borrowbook(idbooks):
         return render_template('borrower.html', title=title, borrowers=borrowers)
 
 @app.route('/borrowbook/borrowers', methods=['GET','POST'])
-def borrowers2():
+def borrowers2(title):
+    conn = get_db_connection()
+    conn.execute('INSERT INTO borrowed_books SELECT * FROM books WHERE title=?'(title,)).fetchall()
+    conn.close()
     return render_template('successful.html')
 
 
@@ -237,11 +241,17 @@ def insertbook():
 
 @app.route('/borrowerspage',methods=['GET','POST'])
 def borrowerspage():
-    return render_template('borrowerspage.html')
+    conn = get_db_connection()
+    borrowers = conn.execute('SELECT * FROM borrowers').fetchall()
+    conn.close()
+    return render_template('borrowerspage.html', borrowers = borrowers)
 
 @app.route('/lendedbooks',methods=['GET','POST'])
 def lendedbooks():
-    return render_template('lendedbooks.html')
+    conn = get_db_connection()
+    lended = conn.execute('SELECT * FROM borrowed_books').fetchall()
+    conn.close()
+    return render_template('lendedbooks.html', lended=lended)
 
 
         #if lname in search or fname in search:
@@ -259,3 +269,4 @@ if __name__ == "__main__":
    app.run(host='0.0.0.0', port=80, debug=True)
 
 
+#conn.execute('INSERT INTO borrowed_books (books_idbooks,borrowers_idborrowers1) VALUES (?,?),(books_idbooks,borrowers_idborrowers)')
