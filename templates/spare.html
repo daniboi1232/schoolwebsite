@@ -168,3 +168,25 @@ def login():
             <a href={{url_for('borrowerspage')}}>Borrowers</a>
             <a href={{url_for('lendedbooks')}}>Lent Books</a>
             <a href={{url_for('weirdo')}}>:)</a>
+
+            <div class="listborrow">
+                <label style="font-size: 30px;">Current People in our system</label>
+                <table> 
+                  <tr>
+                    <th>--First Name--</th><th>--Last Name--</th><th>--Thats ME!--</th>
+                  </tr>
+                  {% for borrowers in borrowers %}
+                  {% for row in title %}
+                  <tr>
+                    <td>{{ borrowers['fname']}}</td>
+                    <td>{{ borrowers['lname']}}</td>
+                    <td>
+                  <a href="{{url_for('borrowers2', idbooks=row.idbooks )}}"> 
+                    <img src="/static/css/images/thumb.png" style="width: 20px; height: 20px;" >
+                  </a>
+                  </td>
+                  </tr> 
+                  {% endfor %}
+                  {% endfor %}
+                </table>
+              </div>

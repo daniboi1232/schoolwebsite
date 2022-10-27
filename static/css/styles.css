@@ -98,8 +98,8 @@ nav a:hover{
   color: #fff;
 }
 .content-area{
-  width: 100%;
-  height: 800px;
+  width: 100vw;
+  height: 120vh;
   position: relative;
   background: #ffffff;
   top: 550px;
@@ -130,6 +130,9 @@ nav a:hover{
 }
 .form2 label{
   font-size: 30px;
+}
+.form3 label{
+  font-size: 25px;
 }
 h3{
   padding-top: 10px;
@@ -166,4 +169,19 @@ button{
 }
 .listborrow th{
   margin: 10px;
+}
+.container input{
+  border-radius: 15px;
+  border: 2px solid rgb(55, 55, 55);
+  padding: 15px;
+  width: 150px;
+  height: 10px;
+}
+.container label{
+  font-size: 20px;
+}
+.form3 button{
+  background-color: #ffffff;
+  padding: 5px;
+  border-radius: 10px;
 }

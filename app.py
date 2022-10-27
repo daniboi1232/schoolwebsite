@@ -4,6 +4,7 @@ import time
 from re import search, template
 from flask import Flask, render_template, redirect, url_for, request, flash, session
 import sqlite3
+from datetime import datetime, timedelta
 #from flask_mysqldb import MySQL
 #import MySQLdb.cursors
 
@@ -59,7 +60,7 @@ def login():
             # Account doesnt exist or username/password incorrect
             msg = 'Incorrect username/password!'
     # Show the login form with message (if any)
-    return render_template('index.html')
+    return render_template('index.html', msg=msg)
 
 
 
@@ -111,26 +112,69 @@ def addbook():
             conn.close()
     return render_template('library.html')
     
-@app.route('/borrowbook/<idbooks>', methods=['GET','POST'])
+@app.route('/borrowbook/<int:idbooks>', methods=['GET','POST'])
 def borrowbook(idbooks):
     if request.method == 'GET':
         #connecting to the db
         conn = get_db_connection()
-        
         borrowers = conn.execute('SELECT * FROM borrowers').fetchall()
-        
         title = conn.execute('SELECT * FROM books WHERE idbooks=?',(idbooks,)).fetchall()
         print(len(title))
-
-
         conn.close()
         return render_template('borrower.html', title=title, borrowers=borrowers)
 
-@app.route('/borrowbook/borrowers', methods=['GET','POST'])
-def borrowers2(title):
+@app.route('/borrowbook/borrowers/<idbooks>', methods=['GET','POST'])
+def borrowers2(idbooks,idborrowers):
     conn = get_db_connection()
-    conn.execute('INSERT INTO borrowed_books SELECT * FROM books WHERE title=?'(title,)).fetchall()
+    due_date_set = timedelta(weeks = 2)
+    due_date = datetime.utcnow() + due_date_set
+    book = conn.execute('SELECT * FROM books WHERE idbooks=?', (idbooks, )).fetchall()
+    borrowers = conn.execute('SELECT * FROM borrowers WHERE idborrowers=?', (idborrowers,)).fetchall()
+    execute = conn.execute('INSERT INTO borrowed_books(books_idbooks1, borrowed_date, due_date) VALUES (?, CURRENT_TIMESTAMP, ?)', (idbooks,due_date)).fetchall()
+    print(borrowers)
+    
+    #SELECT idbooks FROM books WHERE idbooks=?
+    #INSERT INTO borrowed_books SELECT * FROM books WHERE title=?'(title)).fetchall()
+    #conn.execute('INSERT INTO borrowed_books (borrowed_date) SELECT idbooks FROM books WHERE ')
     conn.close()
+    return render_template('successful.html', book=book, execute=execute)
+
+@app.route('/borrowbook/borrowers3', methods=['GET','POST'])
+def borrowers3(idbooks):
+    fname = request.form['fname']
+    lname = request.form['lname']
+    phone = request.form.get('phonenum')
+    address1 = request.form['address1']
+    city = request.form['city']
+    email = request.form['email']
+
+
+    if not fname:
+        flash('First Name is Required!')
+    elif not lname:
+        flash('Last Name is Required!')
+    elif not phone:
+        flash('Phone Number is Required!')
+    elif not address1:
+        flash('Address is Required!')
+    elif not city:
+        flash('City is Required!')
+    elif not email:
+        flash('Email is Required!')
+
+    else:
+        conn = get_db_connection()
+        conn.execute('INSERT INTO borrowers (fname, lname, phone, address1, city, email) VALUES (?, ?, ?, ?, ?, ?)',(fname, lname, phone, address1, city, email))
+
+        due_date_set = timedelta(weeks = 2)
+        due_date = datetime.utcnow() + due_date_set
+        execute = conn.execute('INSERT INTO borrowed_books(books_idbooks1, borrowed_date, due_date) VALUES (?, CURRENT_TIMESTAMP, ?)', (idbooks,due_date)).fetchall()
+        #no2execute = conn.execute('INSERT INTO ')
+        print(borrowers)
+    
+    
+        conn.commit()
+        conn.close()
     return render_template('successful.html')
 
 

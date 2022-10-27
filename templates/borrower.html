@@ -31,52 +31,40 @@
     </div>
    <div class="content-area">
     <div class="wrapper">
-      <div class="listborrow">
-        <label style="font-size: 30px;">Current People in our system</label>
-        <table> 
-          <tr>
-            <th>--First Name--</th><th>--Last Name--</th><th>--Thats ME!--</th>
-          </tr>
-          {% for borrowers in borrowers %}
-          <tr>
-            <td>{{ borrowers['fname']}}</td>
-            <td>{{ borrowers['lname']}}</td>
-            <td>
-          <a href="/borrowbook/borrowers">
-                <img src="/static/css/images/thumb.png" style="width: 20px; height: 20px;" >
-          </a>
-          </td>
-          </tr> 
-          {% endfor %}
-        </table>
-      </div>
+      
       <br><br><br>
       <div class="form"> 
-        <div class="form2">
+        <div class="form3">
           {% for row in title %}
            <label>Insert Information To Borrow {{ row[1]}}</label>
           {% endfor %}
-            <form action="borrowers" method="POST">
+            <form action="borrowers3" method="POST">
             <div class="container">
               
                 <br>
                 <label for="fname">First Name</label>
+                <br>
                 <input type="text" placeholder="Enter First Name" name="fname" required>
                 <br>
                 <br>
                 <label for="lname">Last Name</label>
+                <br>
                 <input type="text" placeholder="Enter Last Name" name="lname" required>
                 <br><br>
                 <label for="phone">Phone Number</label>
+                <br>
                 <input type="text" placeholder="Enter Phone Number" name="phonenum" required>
                 <br><br>
                 <label for="address1">Address</label>
+                <br>
                 <input type="text" placeholder="Enter Location of Residence" name="address1" required>
                 <br><br>
                 <label for="city">City</label>
+                <br>
                 <input type="text" placeholder="Enter City of Residence" name="city" required>
                 <br><br>
                 <label for="email">Email</label>
+                <br>
                 <input type="email" placeholder="Enter Email" name="email" required>
                 <br>
                 <br>

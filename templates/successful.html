@@ -32,7 +32,9 @@
     <div class="content-area">
       <div class="wrapper">
         <h1>Operation Successful</h1>
-        
+        {% for book in book %}
+            <h2>{{ book['title']}}</h2>
+        {% endfor %}
       </div>
     </div>
   </body>
