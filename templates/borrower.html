@@ -38,7 +38,7 @@
           {% for row in title %}
            <label>Insert Information To Borrow {{ row[1]}}</label>
           {% endfor %}
-            <form action="borrowers3" method="POST">
+            <form action="/successful/ {{ title['idbooks']}}" method="POST">
             <div class="container">
               
                 <br>
@@ -68,7 +68,12 @@
                 <input type="email" placeholder="Enter Email" name="email" required>
                 <br>
                 <br>
-                <button type="submit">Add User</button>
+                {% for row in title %}
+                  <input type="hidden" name="idbooks" value="{{ row[0]}}">
+                {% endfor %}
+                
+                <br>
+                <button type="submit">Borrow Book</button>
             </div>
             </form>
             <button action='cancel' class='cancelbutton'type="submit">Cancel</button>

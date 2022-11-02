@@ -1,6 +1,5 @@
 from crypt import methods
 import email
-import time
 from re import search, template
 from flask import Flask, render_template, redirect, url_for, request, flash, session
 import sqlite3
@@ -121,9 +120,9 @@ def borrowbook(idbooks):
         title = conn.execute('SELECT * FROM books WHERE idbooks=?',(idbooks,)).fetchall()
         print(len(title))
         conn.close()
-        return render_template('borrower.html', title=title, borrowers=borrowers)
+        return render_template('borrower.html', title=title, borrowers=borrowers, idbooks=idbooks)
 
-@app.route('/borrowbook/borrowers/<idbooks>', methods=['GET','POST'])
+@app.route('/borrowbook/borrowers2/<idbooks>', methods=['GET','POST'])
 def borrowers2(idbooks,idborrowers):
     conn = get_db_connection()
     due_date_set = timedelta(weeks = 2)
@@ -137,44 +136,140 @@ def borrowers2(idbooks,idborrowers):
     #INSERT INTO borrowed_books SELECT * FROM books WHERE title=?'(title)).fetchall()
     #conn.execute('INSERT INTO borrowed_books (borrowed_date) SELECT idbooks FROM books WHERE ')
     conn.close()
-    return render_template('successful.html', book=book, execute=execute)
+    return render_template('successful.html', book=book, execute=execute, idbooks=idbooks)
 
-@app.route('/borrowbook/borrowers3', methods=['GET','POST'])
-def borrowers3(idbooks):
-    fname = request.form['fname']
-    lname = request.form['lname']
-    phone = request.form.get('phonenum')
-    address1 = request.form['address1']
-    city = request.form['city']
-    email = request.form['email']
+#@app.route('/successful/<idbooks>', methods=['GET','POST'])
+@app.route('/successful/', methods=['GET','POST'])
+def borrowers3():   ##idbooks
+
+    idbooks = request.form['idbooks']
+
+    form_fname = request.form['fname']
+    form_lname = request.form['lname']
+    form_phone = request.form.get('phonenum')
+    form_address1 = request.form['address1']
+    form_city = request.form['city']
+    form_email = request.form['email']
 
 
-    if not fname:
+    if not form_fname:
         flash('First Name is Required!')
-    elif not lname:
+    elif not form_lname:
         flash('Last Name is Required!')
-    elif not phone:
+    elif not form_phone:
         flash('Phone Number is Required!')
-    elif not address1:
+    elif not form_address1:
         flash('Address is Required!')
-    elif not city:
+    elif not form_city:
         flash('City is Required!')
-    elif not email:
+    elif not form_email:
         flash('Email is Required!')
 
     else:
         conn = get_db_connection()
-        conn.execute('INSERT INTO borrowers (fname, lname, phone, address1, city, email) VALUES (?, ?, ?, ?, ?, ?)',(fname, lname, phone, address1, city, email))
-
-        due_date_set = timedelta(weeks = 2)
-        due_date = datetime.utcnow() + due_date_set
-        execute = conn.execute('INSERT INTO borrowed_books(books_idbooks1, borrowed_date, due_date) VALUES (?, CURRENT_TIMESTAMP, ?)', (idbooks,due_date)).fetchall()
-        #no2execute = conn.execute('INSERT INTO ')
-        print(borrowers)
-    
-    
+        borrower = conn.execute('SELECT * FROM borrowers WHERE fname LIKE ? AND lname LIKE ?',(form_fname, form_lname)).fetchall()
+        rows = len(borrower)
         conn.commit()
         conn.close()
+
+        if rows == 0:
+            #insert users details into the database
+            #return to next page
+            form_fname = request.form['fname']
+            form_lname = request.form['lname']
+            form_phone = request.form.get('phonenum')
+            form_address1 = request.form['address1']
+            form_city = request.form['city']
+            form_email = request.form['email']
+
+
+            if not form_fname:
+                flash('First Name is Required!')
+            elif not form_lname:
+                flash('Last Name is Required!')
+            elif not form_phone:
+                flash('Phone Number is Required!')
+            elif not form_address1:
+                flash('Address is Required!')
+            elif not form_city:
+                flash('City is Required!')
+            elif not form_email:
+                flash('Email is Required!')
+            
+
+            else:
+                conn = get_db_connection()
+                conn.execute('INSERT INTO borrowers (fname, lname, phone, address1, city, email) VALUES (?, ?, ?, ?, ?, ?)',(form_fname, form_lname, form_phone, form_address1, form_city, form_email))
+                borrower = conn.execute('SELECT * FROM borrowers WHERE fname LIKE ? AND lname LIKE ?',(form_fname, form_lname)).fetchall()
+                conn.commit()
+                conn = get_db_connection()
+                #borrowers = conn.execute('SELECT idborrowers FROM borrowers WHERE fname LIKE ? AND lname LIKE ?',(form_fname, form_lname)).fetchall()
+                #Selecting the profile of the borrower from the table 
+                idborrowers = conn.execute('SELECT idborrowers FROM borrowers WHERE fname LIKE ? AND lname LIKE ?',(form_fname, form_lname)).fetchone()
+                conn.commit()
+                if type(idborrowers) is int:
+                    #setting the due date with python math algorithms
+                    due_date_set = timedelta(days = 14)
+                    due_date = datetime.utcnow() + due_date_set
+                    borrowed_date = datetime.utcnow()
+                    #date = conn.execute('SELECT CURRENT_DATE')
+                    book = conn.execute('SELECT * FROM books WHERE idbooks=?', (idbooks,)).fetchall()
+                    conn.commit()
+                    #executing it all
+                    insert = conn.execute('INSERT INTO borrowed_books(books_idbooks1, borrowed_date, due_date, borrowers_idborrowers1) VALUES (?, ?, ?, ?)', (idbooks, borrowed_date, due_date, idborrowers)).fetchall()
+                    #no2execute = conn.execute('INSERT INTO ')
+                    conn.commit()
+                    conn.close()
+                else:
+                    idborrowers2 = idborrowers[0]
+                    idborrowersint = int(idborrowers2)
+                    #setting the due date with python math algorithms
+                    due_date_set = timedelta(days = 14)
+                    due_date = datetime.utcnow() + due_date_set
+                    borrowed_date = datetime.utcnow()
+                    #date = conn.execute('SELECT CURRENT_DATE')
+                    book = conn.execute('SELECT * FROM books WHERE idbooks=?', (idbooks,)).fetchall()
+                    conn.commit()
+                    #executing it all
+                    insert = conn.execute('INSERT INTO borrowed_books(books_idbooks1, borrowed_date, due_date, borrowers_idborrowers1) VALUES (?, ?, ?, ?)', (idbooks, borrowed_date, due_date, idborrowersint)).fetchall()
+                    #no2execute = conn.execute('INSERT INTO ')
+                    conn.commit()
+                    conn.close()
+                
+        else:
+            conn = get_db_connection()
+            #borrowers = conn.execute('SELECT idborrowers FROM borrowers WHERE fname LIKE ? AND lname LIKE ?',(form_fname, form_lname)).fetchall()
+            #Selecting the profile of the borrower from the table 
+            idborrowers = conn.execute('SELECT idborrowers FROM borrowers WHERE fname LIKE ? AND lname LIKE ?',(form_fname, form_lname)).fetchone()
+            conn.commit()
+            if type(idborrowers) is int:
+                #setting the due date with python math algorithms
+                due_date_set = timedelta(days = 14)
+                due_date = datetime.utcnow() + due_date_set
+                borrowed_date = datetime.utcnow()
+                #date = conn.execute('SELECT CURRENT_DATE')
+                book = conn.execute('SELECT * FROM books WHERE idbooks=?', (idbooks,)).fetchall()
+                conn.commit()
+                #executing it all
+                insert = conn.execute('INSERT INTO borrowed_books(books_idbooks1, borrowed_date, due_date, borrowers_idborrowers1) VALUES (?, ?, ?, ?)', (idbooks, borrowed_date, due_date, idborrowers)).fetchall()
+                #no2execute = conn.execute('INSERT INTO ')
+                conn.commit()
+                conn.close()
+            else:
+                idborrowers2 = idborrowers[0]
+                idborrowersint = int(idborrowers2)
+                #setting the due date with python math algorithms
+                due_date_set = timedelta(days = 14)
+                due_date = datetime.utcnow() + due_date_set
+                borrowed_date = datetime.utcnow()
+                #date = conn.execute('SELECT CURRENT_DATE')
+                book = conn.execute('SELECT * FROM books WHERE idbooks=?', (idbooks,)).fetchall()
+                conn.commit()
+                #executing it all
+                insert = conn.execute('INSERT INTO borrowed_books(books_idbooks1, borrowed_date, due_date, borrowers_idborrowers1) VALUES (?, ?, ?, ?)', (idbooks, borrowed_date, due_date, idborrowersint)).fetchall()
+                #no2execute = conn.execute('INSERT INTO ')
+                conn.commit()
+                conn.close()
     return render_template('successful.html')
 
 
