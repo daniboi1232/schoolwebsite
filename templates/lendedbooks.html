@@ -19,7 +19,7 @@
             <a href={{url_for('insertbook')}}>Insert Book</a>
             <a href={{url_for('borrowerspage')}}>Borrowers</a>
             <a href={{url_for('lendedbooks')}}>Lent Books</a>
-            <a href={{url_for('weirdo')}}>:)</a>
+            <a href={{url_for('weirdo')}}>Return Books</a>
           </nav>
         </div>
       </header>
@@ -36,13 +36,13 @@
               <tr>
                 <th>----Title----</th><th>----Author----</th><th>----Borrower----</th>
               </tr>
-              {% for lended in lended %}
+            {% for lended in lended %}
               <tr>
-                <td>{{ lended['title']}}</td>
-                <td>{{ lended['author']}}</td>
-                <td>{{ lended['borrower']}}</td>
+                <td>{{ lended['books_idbooks1']}}</td>
+                <td>{{ lended['']}}</td>
+                <td>{{ lended['borrowers_idborrowers1']}}</td>
               </tr> 
-              {% endfor %}
+            {% endfor %}
             </table>
     </div>
    </div>

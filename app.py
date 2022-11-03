@@ -272,6 +272,10 @@ def borrowers3():   ##idbooks
                 conn.close()
     return render_template('successful.html')
 
+#@app.route('/returnbooks', methods=['GET','POST'])
+#def aboutme():
+    return render_template('aboutme.html')
+
 
 @app.route('/aboutme', methods=['GET','POST'])
 def aboutme():
@@ -389,6 +393,7 @@ def borrowerspage():
 def lendedbooks():
     conn = get_db_connection()
     lended = conn.execute('SELECT * FROM borrowed_books').fetchall()
+    conn.execute('SELECT * FROM books WHERE idooks=?',(idbooks))
     conn.close()
     return render_template('lendedbooks.html', lended=lended)
 
