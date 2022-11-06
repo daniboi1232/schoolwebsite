@@ -197,3 +197,8 @@ def login():
                       Return
                 <input type="hidden" name="idborrowers" value="{{ books_borrowed[4]}}">
               </button>
+              <input type="hidden" name="idbooks" value="{{ books_borrowed[3]}}">
+              <a href="/lendedbook/removed/{{ books_borrowed['idbooks']}}">
+                <img src="/static/css/images/thumb.png" style="width: 20px; height: 20px;" >
+                
+              </a>

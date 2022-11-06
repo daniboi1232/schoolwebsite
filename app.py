@@ -405,23 +405,16 @@ def lendedbooks():
     conn.close()
     return render_template('lendedbooks.html', books_borrowed = books_borrowed)
 
-@app.route('/lendedbook/removed/<int:idbooks>', methods=['GET','POST'])
+@app.route('/removed/<int:idbooks>', methods=['GET','POST'])
 def removebook(idbooks):
-    #idborrowers2 = request.form('idborrowers')
-    if type(idbooks) is int:
-        conn = get_db_connection()
-        conn.execute('DELETE FROM borrowed_books WHERE books_idbooks=?',(idbooks))
-        conn.commit()
-        conn.close
-        return render_template('bookreturned.html')
-    else:
-        idbooks2 = idbooks[0]
-        idbooksint = int(idbooks2)
-        conn = get_db_connection()
-        conn.execute('DELETE FROM borrowed_books WHERE books_idbooks=?',(idbooksint))
-        conn.commit()
-        conn.close
-        return render_template('booksreturned.html')
+
+    idbooksint = int(idbooks) 
+    print(type(idbooks))
+    conn = get_db_connection()
+    conn.execute('DELETE FROM borrowed_books WHERE books_idbooks1=?',(idbooksint,))
+    conn.commit()
+    conn.close
+    return render_template('bookreturned.html')
     #idborrowersint = int(idborrowers)
     #conn = get_db_connection()
     #conn.execute('DELETE FROM borrowed_books WHERE books_idbooks1=?',(idborrowersint))

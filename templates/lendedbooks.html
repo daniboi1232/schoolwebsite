@@ -41,11 +41,13 @@
                   <td>{{ books_borrowed['author']}}</td>
                   <td>{{ books_borrowed['fname']}} {{ books_borrowed['lname']}}</td>
                   <td>
+                  <td>
+                    <a href="{{url_for('removebook', idbooks=books_borrowed.idbooks)}}"><button type="submit">Return</button></a>
+                  </td>
                     
-                    <a href="/removed/{{ books_borrowed['idbooks']}}">
-                      <img src="/static/css/images/thumb.png" style="width: 20px; height: 20px;" >
-                      <input type="hidden" name="idbooks" value="{{ books_borrowed[3]}}">
-                    </a>
+            
+                    
+
                   </td>
               </tr> 
             {% endfor %}
