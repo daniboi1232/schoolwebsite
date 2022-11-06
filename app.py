@@ -106,9 +106,18 @@ def addbook():
             flash('Title is REQUIRED')
         else:
             conn = get_db_connection()
-            conn.execute('INSERT INTO books (title, author) VALUES (?, ?)',(title, author))
+            book = conn.execute('SELECT * FROM books WHERE author LIKE ? AND title LIKE ?',(author, title)).fetchall()
+            rows = len(book)
             conn.commit()
             conn.close()
+
+            if rows == 0:
+                conn = get_db_connection()
+                conn.execute('INSERT INTO books (title, author) VALUES (?, ?)',(title, author))
+                conn.commit()
+                conn.close()
+            else:
+                return render_template('alreadyinlibrary.html')
     return render_template('library.html')
     
 @app.route('/borrowbook/<int:idbooks>', methods=['GET','POST'])
@@ -392,10 +401,33 @@ def borrowerspage():
 @app.route('/lendedbooks',methods=['GET','POST'])
 def lendedbooks():
     conn = get_db_connection()
-    lended = conn.execute('SELECT * FROM borrowed_books').fetchall()
-    conn.execute('SELECT * FROM books WHERE idooks=?',(idbooks))
+    books_borrowed = conn.execute('SELECT borrowed_books.idloan, books.author, books.title, borrowed_books.borrowers_idborrowers1, books.idbooks, borrowers.fname, borrowers.lname, borrowed_books.borrowed_date, borrowed_books.due_date FROM borrowed_books JOIN books ON borrowed_books.books_idbooks1=books.idbooks JOIN borrowers ON borrowed_books.borrowers_idborrowers1=borrowers.idborrowers',).fetchall()
     conn.close()
-    return render_template('lendedbooks.html', lended=lended)
+    return render_template('lendedbooks.html', books_borrowed = books_borrowed)
+
+@app.route('/lendedbook/removed/<int:idbooks>', methods=['GET','POST'])
+def removebook(idbooks):
+    #idborrowers2 = request.form('idborrowers')
+    if type(idbooks) is int:
+        conn = get_db_connection()
+        conn.execute('DELETE FROM borrowed_books WHERE books_idbooks=?',(idbooks))
+        conn.commit()
+        conn.close
+        return render_template('bookreturned.html')
+    else:
+        idbooks2 = idbooks[0]
+        idbooksint = int(idbooks2)
+        conn = get_db_connection()
+        conn.execute('DELETE FROM borrowed_books WHERE books_idbooks=?',(idbooksint))
+        conn.commit()
+        conn.close
+        return render_template('booksreturned.html')
+    #idborrowersint = int(idborrowers)
+    #conn = get_db_connection()
+    #conn.execute('DELETE FROM borrowed_books WHERE books_idbooks1=?',(idborrowersint))
+    #conn.commit()
+    #conn.close
+    #return render_template('error.html')
 
 
         #if lname in search or fname in search:

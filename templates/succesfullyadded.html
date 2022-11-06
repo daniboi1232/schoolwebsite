@@ -5,6 +5,11 @@
     <link rel="stylesheet" href="/static/css/styles.css" />
     <link rel="icon" href="/static/css/images/amongus.png">
     <title>The Library</title>
+    <style>
+      .content-area{
+        top: 100px;
+      }
+    </style>
   </head>
   <body>
     <div class="'box-area">
@@ -23,30 +28,10 @@
         </div>
       </header>
     </div>
-   
-   <div class="banner-area">
-    <h1>Daniel's Library of Books</h1>
-   </div>
-   
-   <div class="content-area">
-    <div class="wrapper">
-        <div class="listborrow">
-            <label style="font-size: 30px;">List of Borrowers</label>
-            <table> 
-              <tr>
-                <th>----First Name----</th><th>----Last Name----</th><th>----Phone Number----</th>
-              </tr>
-              {% for borrowers in borrowers %}
-              <tr>
-                <td>{{ borrowers['fname']}}</td>
-                <td>{{ borrowers['lname']}}</td>
-                <td>+64{{ borrowers['phone']}}</td>
-              </tr> 
-              {% endfor %}
-            </table>
-          </div>
+    <div class="content-area">
+      <div class="wrapper">
+        <h1>Book Successfully Added</h1>
+      </div>
     </div>
-   </div>
-   <br>
   </body>
 </html>

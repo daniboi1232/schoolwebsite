@@ -19,7 +19,6 @@
             <a href={{url_for('insertbook')}}>Insert Book</a>
             <a href={{url_for('borrowerspage')}}>Borrowers</a>
             <a href={{url_for('lendedbooks')}}>Lent Books</a>
-            <a href={{url_for('weirdo')}}>Return Books</a>
           </nav>
         </div>
       </header>
@@ -34,13 +33,20 @@
         <label style="font-size: 30px;">Books currently being borrowed</label>
             <table> 
               <tr>
-                <th>----Title----</th><th>----Author----</th><th>----Borrower----</th>
+                <th>----Title----</th><th>----Author----</th><th>----Borrower----</th><th>----Return----</th>
               </tr>
-            {% for lended in lended %}
+            {% for books_borrowed in books_borrowed %}
               <tr>
-                <td>{{ lended['books_idbooks1']}}</td>
-                <td>{{ lended['']}}</td>
-                <td>{{ lended['borrowers_idborrowers1']}}</td>
+                  <td>{{ books_borrowed['title']}}</td>
+                  <td>{{ books_borrowed['author']}}</td>
+                  <td>{{ books_borrowed['fname']}} {{ books_borrowed['lname']}}</td>
+                  <td>
+                    
+                    <a href="/removed/{{ books_borrowed['idbooks']}}">
+                      <img src="/static/css/images/thumb.png" style="width: 20px; height: 20px;" >
+                      <input type="hidden" name="idbooks" value="{{ books_borrowed[3]}}">
+                    </a>
+                  </td>
               </tr> 
             {% endfor %}
             </table>

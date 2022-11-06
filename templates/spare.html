@@ -190,3 +190,10 @@ def login():
                   {% endfor %}
                 </table>
               </div>
+              <a href="{{url_for('removebook', idborrowers=books_borrowed.idborrowers)}}">
+                <img src="/static/css/images/thumb.png" style="width: 20px; height: 20px;" >
+              </a>
+              <button href="{{url_for('removebook')}}">
+                      Return
+                <input type="hidden" name="idborrowers" value="{{ books_borrowed[4]}}">
+              </button>

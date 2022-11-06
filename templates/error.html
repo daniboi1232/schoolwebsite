@@ -5,6 +5,11 @@
     <link rel="stylesheet" href="/static/css/styles.css" />
     <link rel="icon" href="/static/css/images/amongus.png">
     <title>The Library</title>
+    <style>
+      .content-area{
+        top: 100px;
+      }
+    </style>
   </head>
   <body>
     <div class="'box-area">
@@ -24,42 +29,11 @@
         </div>
       </header>
     </div>
-   
-   <div class="banner-area">
-    <h1>Daniel's Library of Books</h1>
-   </div>
-   
-   <div class="content-area">
-    <div class="wrapper">
-        <table class="librarycontents" style="text-align: center;">
-            <tr>
-                <th>--Title--</th><th>--Author--</th><th>--id--</th><th>--Lend--</th>
-            </tr>
-        {% for title in info %}
-            <tr>
-                <td>{{ title['title']}}</td>
-                <td>{{ title['author']}}</td>
-                <td>{{ title['idbooks']}}</td>
-                <td>
-                <a href="/borrowbook/{{ title['idbooks']}}">
-                    <img src="/static/css/images/thumb.png" style="width: 20px; height: 20px;" >
-                </a>
-                </td>
-            </tr>
-        {% endfor %}
-        </table>
-        
-        
-    </div>
-   </div>
-   <br>
-   <br>
-   <br>
-   <br>
-   <br>
-    <div class="banner">
-      <h1>Welcome to my Online Library</h1>
-      <h3>Here you will find books *obviously*</h3>
+    <div class="content-area">
+      <div class="wrapper">
+        <h1>Error Completing Task</h1>
+        <h2>Please Contact Website Manager</h2>
+      </div>
     </div>
   </body>
 </html>
