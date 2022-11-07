@@ -15,17 +15,29 @@ app.secret_key = 'hWmZq4t7w!z%C*F-JaNdRgUjXn2r5u8x'
 
 
 def get_db_connection():
+    """
+    Connect to database.
+    """
     conn = sqlite3.connect('mydb.sdb')
     conn.row_factory = sqlite3.Row
     return conn
 
 @app.route('/')
 def direct():
+    """
+    This def directs immediately to the Login page
+    """
     return redirect(url_for('login'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    This def is used for the Librarian to log into the Library. 
+    The librarian has one login that will only let them in via sysop - system operator. 
+    This will prevent others from logging in and lending false books.
+    """
+
     # Output message if something goes wrong...
     msg = ''
     # Check if "username" and "password" POST requests exist (user submitted form)
@@ -67,6 +79,10 @@ def login():
 
 @app.route('/search', methods=['GET','POST'])
 def main():
+    """
+    This def is not being used in the website, i used it in prior tests and found out that i dont need it but havent gotten round to removing it
+    """
+
     if request.method == "POST":
         author = request.form['author']
         title = request.form['title']
@@ -84,18 +100,26 @@ def main():
 
 @app.route('/library', methods=['GET','POST'])
 def library():
+    """
+    This is an important def because this is what loads the library page with all the books
+    """
     if request.method == 'POST':
         conn = get_db_connection()
-        title = conn.execute('SELECT * FROM books ORDER BY title').fetchall()
+        title = conn.execute('SELECT * FROM books ORDER BY author').fetchall()
         conn.close()
         return render_template('library.html', info = title)
     elif request.method == 'GET':
         conn = get_db_connection()
-        title = conn.execute('SELECT * FROM books ORDER BY title').fetchall()
+        title = conn.execute('SELECT * FROM books ORDER BY author').fetchall()
         conn.close()
         return render_template('library.html', info = title)
 @app.route('/addbook',methods=['GET','POST'])
 def addbook():
+    """
+    This def is used in the website to add a book into the database.
+    First it will check if the book is in the database and if it is it will not insert.
+    If the book isnt in the database then it will insert it into it
+    """
     if request.method == 'POST':
         author = request.form['author1']
         title = request.form['title1']
@@ -116,12 +140,16 @@ def addbook():
                 conn.execute('INSERT INTO books (title, author) VALUES (?, ?)',(title, author))
                 conn.commit()
                 conn.close()
+                return render_template('succesfullyadded.html')
             else:
                 return render_template('alreadyinlibrary.html')
-    return render_template('library.html')
+    return render_template('succesfullyadded.html')
     
 @app.route('/borrowbook/<int:idbooks>', methods=['GET','POST'])
 def borrowbook(idbooks):
+    """
+    This def is used 
+    """
     if request.method == 'GET':
         #connecting to the db
         conn = get_db_connection()
@@ -133,6 +161,11 @@ def borrowbook(idbooks):
 
 @app.route('/borrowbook/borrowers2/<idbooks>', methods=['GET','POST'])
 def borrowers2(idbooks,idborrowers):
+    """
+    This def was going to be used for borrowing books but it was getting too messy so I wrote a new cleaner def below
+    Therefore this def is not being used
+    I originally had it taking information from the borrowers user and using that but i had trouble getting in that information.
+    """
     conn = get_db_connection()
     due_date_set = timedelta(weeks = 2)
     due_date = datetime.utcnow() + due_date_set
@@ -150,7 +183,11 @@ def borrowers2(idbooks,idborrowers):
 #@app.route('/successful/<idbooks>', methods=['GET','POST'])
 @app.route('/successful/', methods=['GET','POST'])
 def borrowers3():   ##idbooks
-
+    """
+    This is the new and improved def for the borrow_book
+    This def takes information of the borrower and the idbook and inserts it into the database only if the book isnt already borrowed.
+    It also tells when the book is due (always two weeks)
+    """
     idbooks = request.form['idbooks']
 
     form_fname = request.form['fname']
@@ -288,6 +325,9 @@ def borrowers3():   ##idbooks
 
 @app.route('/aboutme', methods=['GET','POST'])
 def aboutme():
+    """
+    This def redirects to the page where my information is held
+    """
     return render_template('aboutme.html')
 
 
@@ -297,32 +337,16 @@ def aboutme():
 
 @app.route('/weirdo', methods=['GET','POST'])
 def weirdo():
-        return render_template('error.html')
-
-#@app.route('/create', methods=['GET','POST'])
-#def create():
-    #if request.method == 'POST':
-        username = request.form['uname']
-        password = request.form['psw']
-        email = request.form['email']
-
-        if not username:
-            flash('Username is REQUIRED!')
-        elif not password:
-            flash('Password is REQUIRED!')
-        elif not email:
-            flash('Email is REQUIRED!')
-        else:
-            conn = get_db_connection()
-            conn.execute('INSERT INTO user (username, password, email) VALUES (?, ?, ?)',(username, password, email))
-            conn.commit()
-            conn.close()
-        return redirect(url_for('main'))
-    #return render_template('spare.html')
-
+    """
+    This def will redirect the librarian to an error page if an error occurs
+    """
+    return render_template('error.html')
 
 @app.route('/borrowers', methods=['GET','POST'])
 def borrowers():
+    """
+    This def inserts the borrower information that is put into the form into the database.
+    """
     fname = request.form['fname']
     lname = request.form['lname']
     phone = request.form.get('phonenum')
@@ -385,14 +409,25 @@ def borrowers():
 
 @app.route('/loan', methods=['GET','POST'])
 def loan():
+    """
+    This def was used for testing. If i nneded to see if something went through all the code and worked,
+    I would do a 'return redirect({{url_for['loan']}})'.
+    """
     return render_template('spare.html')
 
 @app.route('/insertbook',methods=['GET','POST'])
 def insertbook():
+    """
+    This def is used alongside a button to redirect the user to a new page.
+    """
     return render_template('insertbook.html')
 
 @app.route('/borrowerspage',methods=['GET','POST'])
 def borrowerspage():
+    """
+    This def Selects all the data from inside the borrowers table 
+    and displays it onto the borrowers page
+    """
     conn = get_db_connection()
     borrowers = conn.execute('SELECT * FROM borrowers').fetchall()
     conn.close()
@@ -400,6 +435,11 @@ def borrowerspage():
 
 @app.route('/lendedbooks',methods=['GET','POST'])
 def lendedbooks():
+    """
+    This was by far the hardest def to do even though it is small.
+    This uses a join to show the names of the book being borrowed and the name of the person borrowing it,
+    even though the borrowed_books table only includes the id's of the book and borrower.
+    """
     conn = get_db_connection()
     books_borrowed = conn.execute('SELECT borrowed_books.idloan, books.author, books.title, borrowed_books.borrowers_idborrowers1, books.idbooks, borrowers.fname, borrowers.lname, borrowed_books.borrowed_date, borrowed_books.due_date FROM borrowed_books JOIN books ON borrowed_books.books_idbooks1=books.idbooks JOIN borrowers ON borrowed_books.borrowers_idborrowers1=borrowers.idborrowers',).fetchall()
     conn.close()
@@ -407,7 +447,10 @@ def lendedbooks():
 
 @app.route('/removed/<int:idbooks>', methods=['GET','POST'])
 def removebook(idbooks):
-
+    """
+    This def is used for returning a book to the library. 
+    This takes the id of the book thats being borrowed and deletes it from the borrowed_books table.
+    """
     idbooksint = int(idbooks) 
     print(type(idbooks))
     conn = get_db_connection()
