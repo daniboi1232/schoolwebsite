@@ -185,3 +185,19 @@ button{
   padding: 5px;
   border-radius: 10px;
 }
+
+/* 
+This is for the responsiveness for media 
+I put the max pixels to 1000 to accomodate for the phones 
+*/
+@media screen and (max-width: 1000px) {
+  html { 
+    font-size: 12px; 
+  }
+  th{
+    font-size: 3.5rem;
+  }
+  td{
+    font-size: 2.8rem;
+  }
+}

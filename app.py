@@ -2,14 +2,18 @@ from crypt import methods
 import email
 from re import search, template
 from flask import Flask, render_template, redirect, url_for, request, flash, session
+from flask_session import Session
 import sqlite3
 from datetime import datetime, timedelta
 #from flask_mysqldb import MySQL
 #import MySQLdb.cursors
 
-logged = "false"
+logged = False
 
 app = Flask(__name__)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 app.secret_key = 'hWmZq4t7w!z%C*F-JaNdRgUjXn2r5u8x'
 
@@ -27,6 +31,8 @@ def direct():
     """
     This def directs immediately to the Login page
     """
+    global logged
+    logged = False
     return redirect(url_for('login'))
 
 
@@ -65,7 +71,8 @@ def login():
             conn = get_db_connection()
             title = conn.execute('SELECT * FROM books ORDER BY title').fetchall()
             conn.close()
-            logged = "true"
+            global logged
+            logged = True
             return redirect(url_for('library', info = title))
         else:
             # Account doesnt exist or username/password incorrect
@@ -103,16 +110,19 @@ def library():
     """
     This is an important def because this is what loads the library page with all the books
     """
-    if request.method == 'POST':
-        conn = get_db_connection()
-        title = conn.execute('SELECT * FROM books ORDER BY author').fetchall()
-        conn.close()
-        return render_template('library.html', info = title)
-    elif request.method == 'GET':
-        conn = get_db_connection()
-        title = conn.execute('SELECT * FROM books ORDER BY author').fetchall()
-        conn.close()
-        return render_template('library.html', info = title)
+    if logged == True:
+        if request.method == 'POST':
+            conn = get_db_connection()
+            title = conn.execute('SELECT * FROM books ORDER BY author').fetchall()
+            conn.close()
+            return render_template('library.html', info = title)
+        elif request.method == 'GET':
+            conn = get_db_connection()
+            title = conn.execute('SELECT * FROM books ORDER BY author').fetchall()
+            conn.close()
+            return render_template('library.html', info = title)
+    else:
+        return redirect(url_for('direct'))
 @app.route('/addbook',methods=['GET','POST'])
 def addbook():
     """
@@ -328,7 +338,12 @@ def aboutme():
     """
     This def redirects to the page where my information is held
     """
-    return render_template('aboutme.html')
+    if logged == False:
+        return redirect(url_for('direct'))
+    elif logged == True:
+        return render_template('aboutme.html')
+    else:
+        return redirect(url_for('weirdo'))
 
 
 #@app.route('/createaccount', methods=['GET','POST'])
@@ -347,64 +362,66 @@ def borrowers():
     """
     This def inserts the borrower information that is put into the form into the database.
     """
-    fname = request.form['fname']
-    lname = request.form['lname']
-    phone = request.form.get('phonenum')
-    address1 = request.form['address1']
-    city = request.form['city']
-    email = request.form['email']
+    if logged == True:
+        fname = request.form['fname']
+        lname = request.form['lname']
+        phone = request.form.get('phonenum')
+        address1 = request.form['address1']
+        city = request.form['city']
+        email = request.form['email']
 
-    if not fname:
-        flash('First Name is Required!')
-    elif not lname:
-        flash('Last Name is Required!')
-    elif not phone:
-        flash('Phone Number is Required!')
-    elif not address1:
-        flash('Address is Required!')
-    elif not city:
-        flash('City is Required!')
-    elif not email:
-        flash('Email is Required!')
-    else:
-        conn = get_db_connection()
-        search = conn.execute('SELECT * FROM borrowers WHERE fname LIKE ? AND lname LIKE ?',(fname, lname)).fetchall()
-        rows = len(search)
-
-        if rows > 0:
-            #insert users details into the database
-            #return to next page
-            return render_template('aboutme.html')
+        if not fname:
+            flash('First Name is Required!')
+        elif not lname:
+            flash('Last Name is Required!')
+        elif not phone:
+            flash('Phone Number is Required!')
+        elif not address1:
+            flash('Address is Required!')
+        elif not city:
+            flash('City is Required!')
+        elif not email:
+            flash('Email is Required!')
         else:
-            fname = request.form['fname']
-            lname = request.form['lname']
-            phone = request.form.get('phonenum')
-            address1 = request.form['address1']
-            city = request.form['city']
-            email = request.form['email']
+            conn = get_db_connection()
+            search = conn.execute('SELECT * FROM borrowers WHERE fname LIKE ? AND lname LIKE ?',(fname, lname)).fetchall()
+            rows = len(search)
 
-
-            if not fname:
-                flash('First Name is Required!')
-            elif not lname:
-                flash('Last Name is Required!')
-            elif not phone:
-                flash('Phone Number is Required!')
-            elif not address1:
-                flash('Address is Required!')
-            elif not city:
-                flash('City is Required!')
-            elif not email:
-                flash('Email is Required!')
-
+            if rows > 0:
+                #insert users details into the database
+                #return to next page
+                return render_template('aboutme.html')
             else:
-                conn = get_db_connection()
-                conn.execute('INSERT INTO borrowers (fname, lname, phone, address1, city, email) VALUES (?, ?, ?, ?, ?, ?)',(fname, lname, phone, address1, city, email))
-                conn.commit()
-                conn.close()
+                fname = request.form['fname']
+                lname = request.form['lname']
+                phone = request.form.get('phonenum')
+                address1 = request.form['address1']
+                city = request.form['city']
+                email = request.form['email']
 
-            return render_template('main.html')
-    return render_template('spare.html')
+
+                if not fname:
+                    flash('First Name is Required!')
+                elif not lname:
+                    flash('Last Name is Required!')
+                elif not phone:
+                    flash('Phone Number is Required!')
+                elif not address1:
+                    flash('Address is Required!')
+                elif not city:
+                    flash('City is Required!')
+                elif not email:
+                    flash('Email is Required!')
+
+                else:
+                    conn = get_db_connection()
+                    conn.execute('INSERT INTO borrowers (fname, lname, phone, address1, city, email) VALUES (?, ?, ?, ?, ?, ?)',(fname, lname, phone, address1, city, email))
+                    conn.commit()
+                    conn.close()
+
+                return render_template('main.html')
+    else:
+        return redirect(url_for('direct'))
 
 
 @app.route('/loan', methods=['GET','POST'])
@@ -420,7 +437,10 @@ def insertbook():
     """
     This def is used alongside a button to redirect the user to a new page.
     """
-    return render_template('insertbook.html')
+    if logged == True:
+        return render_template('insertbook.html')
+    else:
+        return redirect(url_for('direct'))
 
 @app.route('/borrowerspage',methods=['GET','POST'])
 def borrowerspage():
@@ -428,10 +448,13 @@ def borrowerspage():
     This def Selects all the data from inside the borrowers table 
     and displays it onto the borrowers page
     """
-    conn = get_db_connection()
-    borrowers = conn.execute('SELECT * FROM borrowers').fetchall()
-    conn.close()
-    return render_template('borrowerspage.html', borrowers = borrowers)
+    if logged == True:
+        conn = get_db_connection()
+        borrowers = conn.execute('SELECT * FROM borrowers').fetchall()
+        conn.close()
+        return render_template('borrowerspage.html', borrowers = borrowers)
+    else:
+        return redirect(url_for('direct'))
 
 @app.route('/lendedbooks',methods=['GET','POST'])
 def lendedbooks():
@@ -440,10 +463,13 @@ def lendedbooks():
     This uses a join to show the names of the book being borrowed and the name of the person borrowing it,
     even though the borrowed_books table only includes the id's of the book and borrower.
     """
-    conn = get_db_connection()
-    books_borrowed = conn.execute('SELECT borrowed_books.idloan, books.author, books.title, borrowed_books.borrowers_idborrowers1, books.idbooks, borrowers.fname, borrowers.lname, borrowed_books.borrowed_date, borrowed_books.due_date FROM borrowed_books JOIN books ON borrowed_books.books_idbooks1=books.idbooks JOIN borrowers ON borrowed_books.borrowers_idborrowers1=borrowers.idborrowers',).fetchall()
-    conn.close()
-    return render_template('lendedbooks.html', books_borrowed = books_borrowed)
+    if logged == True:
+        conn = get_db_connection()
+        books_borrowed = conn.execute('SELECT borrowed_books.idloan, books.author, books.title, borrowed_books.borrowers_idborrowers1, books.idbooks, borrowers.fname, borrowers.lname, borrowed_books.borrowed_date, borrowed_books.due_date FROM borrowed_books JOIN books ON borrowed_books.books_idbooks1=books.idbooks JOIN borrowers ON borrowed_books.borrowers_idborrowers1=borrowers.idborrowers',).fetchall()
+        conn.close()
+        return render_template('lendedbooks.html', books_borrowed = books_borrowed)
+    else:
+        return redirect(url_for('direct'))
 
 @app.route('/removed/<int:idbooks>', methods=['GET','POST'])
 def removebook(idbooks):
