@@ -30,7 +30,10 @@
    
    <div class="content-area">
     <div class="wrapper">
-        <table class="librarycontents" style="text-align: center;">
+      <br>
+      <h3>Click the thumb of the book that is being borrowed and then Insert the borrowers information on the next page.</h3>
+        <br>
+      <table class="librarycontents" >
             <tr>
                 <th>--Title--</th><th>--Author--</th><th>--Lend--</th>
             </tr>
@@ -38,8 +41,8 @@
             <tr>
                 <td>{{ title['title']}}</td>
                 <td>{{ title['author']}}</td>
-                <td>
-                <a href="/borrowbook/{{ title['idbooks']}}">
+                <td style="text-align: right;">
+                <a href="/borrowbook/{{ title['idbooks']}}" >
                     <img src="/static/css/images/thumb.png" style="width: 20px; height: 20px;" >
                 </a>
                 </td>

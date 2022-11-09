@@ -148,8 +148,11 @@ input{
   margin: 50px;
 }
 .librarycontents{
-  text-align: center;
+  text-align: left;
   text-decoration: bold;
+}
+.librarycontents image {
+  text-align: right;
 }
 table{
   margin-left: auto;

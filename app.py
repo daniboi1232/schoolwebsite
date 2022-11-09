@@ -1,6 +1,7 @@
 from crypt import methods
 import email
 from re import search, template
+import re
 from flask import Flask, render_template, redirect, url_for, request, flash, session
 from flask_session import Session
 import sqlite3
@@ -163,11 +164,16 @@ def borrowbook(idbooks):
     if request.method == 'GET':
         #connecting to the db
         conn = get_db_connection()
-        borrowers = conn.execute('SELECT * FROM borrowers').fetchall()
-        title = conn.execute('SELECT * FROM books WHERE idbooks=?',(idbooks,)).fetchall()
-        print(len(title))
-        conn.close()
-        return render_template('borrower.html', title=title, borrowers=borrowers, idbooks=idbooks)
+        ifbooks = conn.execute('SELECT * FROM borrowed_books WHERE books_idbooks1=?', (idbooks,)).fetchall()
+        row = len(ifbooks)
+        if row == 0:
+            borrowers = conn.execute('SELECT * FROM borrowers').fetchall()
+            title = conn.execute('SELECT * FROM books WHERE idbooks=?',(idbooks,)).fetchall()
+            print(len(title))
+            conn.close()
+            return render_template('borrower.html', title=title, borrowers=borrowers, idbooks=idbooks)
+        else:
+            return render_template('bookisborrowed.html')
 
 @app.route('/borrowbook/borrowers2/<idbooks>', methods=['GET','POST'])
 def borrowers2(idbooks,idborrowers):
@@ -264,6 +270,55 @@ def borrowers3():   ##idbooks
                 idborrowers = conn.execute('SELECT idborrowers FROM borrowers WHERE fname LIKE ? AND lname LIKE ?',(form_fname, form_lname)).fetchone()
                 conn.commit()
                 if type(idborrowers) is int:
+                    ifbooks = conn.execute('SELECT * FROM borrowed_books WHERE books_idbooks1=?', (idbooks,)).fetchall()
+                    row = len(ifbooks)
+                    if row == 0:
+                        #setting the due date with python math algorithms
+                        due_date_set = timedelta(days = 14)
+                        due_date = datetime.utcnow() + due_date_set
+                        borrowed_date = datetime.utcnow()
+                        #date = conn.execute('SELECT CURRENT_DATE')
+                        book = conn.execute('SELECT * FROM books WHERE idbooks=?', (idbooks,)).fetchall()
+                        conn.commit()
+                        #executing it all
+                        insert = conn.execute('INSERT INTO borrowed_books(books_idbooks1, borrowed_date, due_date, borrowers_idborrowers1) VALUES (?, ?, ?, ?)', (idbooks, borrowed_date, due_date, idborrowers)).fetchall()
+                        #no2execute = conn.execute('INSERT INTO ')
+                        conn.commit()
+                        conn.close()
+                    else:
+                        return render_template('bookisborrowed.html')
+                else:
+                    ifbooks = conn.execute('SELECT * FROM borrowed_books WHERE books_idbooks1=?', (idbooks,)).fetchall()
+                    row = len(ifbooks)
+                    if row == 0:
+
+                        idborrowers2 = idborrowers[0]
+                        idborrowersint = int(idborrowers2)
+                        #setting the due date with python math algorithms
+                        due_date_set = timedelta(days = 14)
+                        due_date = datetime.utcnow() + due_date_set
+                        borrowed_date = datetime.utcnow()
+                        #date = conn.execute('SELECT CURRENT_DATE')
+                        book = conn.execute('SELECT * FROM books WHERE idbooks=?', (idbooks,)).fetchall()
+                        conn.commit()
+                        #executing it all
+                        insert = conn.execute('INSERT INTO borrowed_books(books_idbooks1, borrowed_date, due_date, borrowers_idborrowers1) VALUES (?, ?, ?, ?)', (idbooks, borrowed_date, due_date, idborrowersint)).fetchall()
+                        #no2execute = conn.execute('INSERT INTO ')
+                        conn.commit()
+                        conn.close()
+                    else:
+                        return render_template('bookisborrowed.html')
+                
+        else:
+            conn = get_db_connection()
+            #borrowers = conn.execute('SELECT idborrowers FROM borrowers WHERE fname LIKE ? AND lname LIKE ?',(form_fname, form_lname)).fetchall()
+            #Selecting the profile of the borrower from the table 
+            idborrowers = conn.execute('SELECT idborrowers FROM borrowers WHERE fname LIKE ? AND lname LIKE ?',(form_fname, form_lname)).fetchone()
+            conn.commit()
+            if type(idborrowers) is int:
+                ifbooks = conn.execute('SELECT * FROM borrowed_books WHERE books_idbooks1=?', (idbooks,)).fetchall()
+                row = len(ifbooks)
+                if row == 0:
                     #setting the due date with python math algorithms
                     due_date_set = timedelta(days = 14)
                     due_date = datetime.utcnow() + due_date_set
@@ -277,6 +332,11 @@ def borrowers3():   ##idbooks
                     conn.commit()
                     conn.close()
                 else:
+                    return render_template('bookisborrowed.html')
+            else:
+                ifbooks = conn.execute('SELECT * FROM borrowed_books WHERE books_idbooks1=?', (idbooks,)).fetchall()
+                row = len(ifbooks)
+                if row == 0:
                     idborrowers2 = idborrowers[0]
                     idborrowersint = int(idborrowers2)
                     #setting the due date with python math algorithms
@@ -291,41 +351,8 @@ def borrowers3():   ##idbooks
                     #no2execute = conn.execute('INSERT INTO ')
                     conn.commit()
                     conn.close()
-                
-        else:
-            conn = get_db_connection()
-            #borrowers = conn.execute('SELECT idborrowers FROM borrowers WHERE fname LIKE ? AND lname LIKE ?',(form_fname, form_lname)).fetchall()
-            #Selecting the profile of the borrower from the table 
-            idborrowers = conn.execute('SELECT idborrowers FROM borrowers WHERE fname LIKE ? AND lname LIKE ?',(form_fname, form_lname)).fetchone()
-            conn.commit()
-            if type(idborrowers) is int:
-                #setting the due date with python math algorithms
-                due_date_set = timedelta(days = 14)
-                due_date = datetime.utcnow() + due_date_set
-                borrowed_date = datetime.utcnow()
-                #date = conn.execute('SELECT CURRENT_DATE')
-                book = conn.execute('SELECT * FROM books WHERE idbooks=?', (idbooks,)).fetchall()
-                conn.commit()
-                #executing it all
-                insert = conn.execute('INSERT INTO borrowed_books(books_idbooks1, borrowed_date, due_date, borrowers_idborrowers1) VALUES (?, ?, ?, ?)', (idbooks, borrowed_date, due_date, idborrowers)).fetchall()
-                #no2execute = conn.execute('INSERT INTO ')
-                conn.commit()
-                conn.close()
-            else:
-                idborrowers2 = idborrowers[0]
-                idborrowersint = int(idborrowers2)
-                #setting the due date with python math algorithms
-                due_date_set = timedelta(days = 14)
-                due_date = datetime.utcnow() + due_date_set
-                borrowed_date = datetime.utcnow()
-                #date = conn.execute('SELECT CURRENT_DATE')
-                book = conn.execute('SELECT * FROM books WHERE idbooks=?', (idbooks,)).fetchall()
-                conn.commit()
-                #executing it all
-                insert = conn.execute('INSERT INTO borrowed_books(books_idbooks1, borrowed_date, due_date, borrowers_idborrowers1) VALUES (?, ?, ?, ?)', (idbooks, borrowed_date, due_date, idborrowersint)).fetchall()
-                #no2execute = conn.execute('INSERT INTO ')
-                conn.commit()
-                conn.close()
+                else:
+                    return render_template('bookisborrowed.html')
     return render_template('successful.html')
 
 #@app.route('/returnbooks', methods=['GET','POST'])
